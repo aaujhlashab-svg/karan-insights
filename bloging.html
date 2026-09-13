@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vyxora Insights | Modern Blog Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #000000; color: #f8fafc; }
+        .glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glow-card { background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(15, 23, 42, 0.8) 100%); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-black">
+
+    <!-- Header -->
+    <header class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center border-b border-white/5">
+        <h1 class="text-xl font-extrabold tracking-wider text-emerald-400">VYXORA INSIGHTS</h1>
+        <nav class="hidden md:flex gap-6 text-sm font-medium text-slate-300">
+            <a href="#" onclick="filterBlogs('all')" class="hover:text-emerald-400 transition">All</a>
+            <a href="#" onclick="filterBlogs('AI & Tech')" class="hover:text-emerald-400 transition">AI & Tech</a>
+            <a href="#" onclick="filterBlogs('Freelancing')" class="hover:text-emerald-400 transition">Freelancing</a>
+            <a href="#" onclick="filterBlogs('Study Hacks')" class="hover:text-emerald-400 transition">Study Hacks</a>
+            <a href="#" onclick="filterBlogs('Poetry')" class="hover:text-emerald-400 transition">Poetry</a>
+            <a href="#about-creator" class="text-emerald-400 font-semibold hover:underline">About Creator</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section (Clean & Minimal) -->
+    <section class="text-center py-16 px-4 relative overflow-hidden">
+        <div class="absolute inset-0 -z-10 flex items-center justify-center">
+            <div class="w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        </div>
+        <h2 class="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">Learn. Build. Evolve.</h2>
+        <p class="text-slate-400 max-w-xl mx-auto text-sm md:text-base mb-8">Discover high-demand tech guides, freelancing secrets, and modern insights curated for you.</p>
+        
+        <button onclick="toggleForm()" class="bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm px-7 py-3 rounded-full transition shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5">+ Add New Article</button>
+    </section>
+
+    <!-- Add Blog Form -->
+    <div id="blog-form-container" class="max-w-2xl mx-auto px-6 mb-12 hidden">
+        <form id="add-blog-form" onsubmit="addNewBlog(event)" class="glass p-8 rounded-3xl space-y-4 shadow-2xl border border-emerald-500/20">
+            <h3 class="text-xl font-bold text-emerald-400 mb-2">Publish New Article</h3>
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Article Title</label>
+                <input type="text" id="new-title" required class="w-full bg-black/60 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Category</label>
+                    <select id="new-category" class="w-full bg-black/60 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        <option value="AI & Tech">AI & Tech</option>
+                        <option value="Freelancing">Freelancing</option>
+                        <option value="Study Hacks">Study Hacks</option>
+                        <option value="Poetry">Poetry</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Date</label>
+                    <input type="text" id="new-date" value="Sep 13, 2026" required class="w-full bg-black/60 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Short Description</label>
+                <input type="text" id="new-desc" required class="w-full bg-black/60 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Full Content / Article Body</label>
+                <textarea id="new-content" rows="4" required class="w-full bg-black/60 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 rounded-xl transition text-sm shadow-lg shadow-emerald-500/10">Publish Article</button>
+        </form>
+    </div>
+
+    <!-- Blog Grid -->
+    <main class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" id="blog-grid">
+        <!-- Blogs injected via JS -->
+    </main>
+
+    <!-- Upgraded Creator Profile Section with Hidden/Discreet Edit Button -->
+    <section id="about-creator" class="max-w-4xl mx-auto px-6 mb-24 w-full relative">
+        <div class="glow-card glass p-8 md:p-10 rounded-3xl border border-emerald-500/30 shadow-2xl relative overflow-hidden">
+            <!-- Discreet Edit Profile Icon inside the card -->
+            <button onclick="toggleProfileEdit()" title="Edit Profile & Image" class="absolute top-5 right-5 text-slate-400 hover:text-emerald-400 bg-black/40 hover:bg-black/80 border border-white/10 p-2.5 rounded-xl transition text-xs flex items-center gap-1.5 font-medium z-20">
+                ⚙️ <span class="hidden sm:inline">Edit Profile</span>
+            </button>
+
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                <!-- Profile Image Avatar Container -->
+                <div class="relative group shrink-0">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+                    <div class="relative w-28 h-28 rounded-full overflow-hidden border-2 border-emerald-400 bg-black flex items-center justify-center">
+                        <img id="display-profile-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="Karan" class="w-full h-full object-cover">
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-center md:text-left">
+                    <div class="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-1 bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Creator & Developer
+                    </div>
+                    <h3 id="display-profile-name" class="text-3xl font-extrabold text-white tracking-tight">Karan</h3>
+                    <p id="display-profile-bio" class="text-slate-300 text-sm md:text-base leading-relaxed max-w-xl">
+                        A passionate web developer and BCA student who loves building sleek interfaces, interactive tools, and sharing valuable tech and freelancing insights through Vyxora Insights.
+                    </p>
+                    
+                    <!-- Social & Portfolio Link Badges -->
+                    <div class="pt-3 flex flex-wrap justify-center md:justify-start gap-2.5">
+                        <a href="https://aaujhlashab-svg.github.io/portfolio/" target="_blank" class="px-4 py-2 rounded-xl bg-black/60 hover:bg-emerald-500 hover:text-black border border-slate-700 hover:border-emerald-400 text-xs font-semibold text-slate-200 transition duration-200 shadow-sm">Main Portfolio ↗</a>
+                        <a href="https://github.com" target="_blank" class="px-4 py-2 rounded-xl bg-black/60 hover:bg-emerald-500 hover:text-black border border-slate-700 hover:border-emerald-400 text-xs font-semibold text-slate-200 transition duration-200 shadow-sm">GitHub ↗</a>
+                        <a href="https://linkedin.com" target="_blank" class="px-4 py-2 rounded-xl bg-black/60 hover:bg-emerald-500 hover:text-black border border-slate-700 hover:border-emerald-400 text-xs font-semibold text-slate-200 transition duration-200 shadow-sm">LinkedIn ↗</a>
+                        <a href="https://fiverr.com" target="_blank" class="px-4 py-2 rounded-xl bg-black/60 hover:bg-emerald-500 hover:text-black border border-slate-700 hover:border-emerald-400 text-xs font-semibold text-slate-200 transition duration-200 shadow-sm">Fiverr ↗</a>
+                        <a href="https://upwork.com" target="_blank" class="px-4 py-2 rounded-xl bg-black/60 hover:bg-emerald-500 hover:text-black border border-slate-700 hover:border-emerald-400 text-xs font-semibold text-slate-200 transition duration-200 shadow-sm">Upwork ↗</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Form Popup (Hidden by default) -->
+        <div id="profile-form-container" class="hidden mt-6 max-w-xl mx-auto">
+            <form id="edit-profile-form" onsubmit="updateProfile(event)" class="glass p-8 rounded-3xl space-y-4 shadow-2xl border border-emerald-500/20">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-xl font-bold text-emerald-400">Update Creator Profile</h3>
+                    <button type="button" onclick="toggleProfileEdit()" class="text-slate-400 hover:text-white text-xl">&times;</button>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Creator Name</label>
+                    <input type="text" id="profile-name-input" value="Karan" required class="w-full bg-black/60 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Upload Profile Photo from PC</label>
+                    <input type="file" id="profile-img-input" accept="image/*" class="w-full bg-black/60 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-500 file:text-black hover:file:bg-emerald-400 cursor-pointer">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Bio / Description</label>
+                    <textarea id="profile-bio-input" rows="3" required class="w-full bg-black/60 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">A passionate web developer and BCA student who loves building sleek interfaces, interactive tools, and sharing valuable tech and freelancing insights through Vyxora Insights.</textarea>
+                </div>
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 rounded-xl transition text-sm shadow-lg shadow-emerald-500/10">Save Changes</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Article Modal -->
+    <div id="blog-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="glass max-w-2xl w-full p-8 rounded-3xl relative max-h-[85vh] overflow-y-auto border border-emerald-500/30 shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+            <span id="modal-cat" class="text-xs font-semibold px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30"></span>
+            <h2 id="modal-title" class="text-2xl md:text-3xl font-extrabold mt-4 mb-2 text-white"></h2>
+            <p id="modal-date" class="text-xs text-slate-400 mb-6 font-medium"></p>
+            <div id="modal-content" class="text-slate-300 text-sm md:text-base leading-relaxed space-y-4 whitespace-pre-line"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="glass text-center py-6 text-xs font-medium text-slate-400 border-t border-white/5">
+        © 2026 Vyxora Insights. Built with precision and clean code by Karan.
+    </footer>
+
+    <!-- Script -->
+    <script>
+        let blogs = [
+            { 
+                id: 1, 
+                title: "Top AI Tools Transforming Workflows in 2026", 
+                category: "AI & Tech", 
+                date: "Sep 13, 2026", 
+                desc: "Discover how multi-agent AI systems and autonomous automation platforms are replacing repetitive tasks this year.",
+                content: "Workflow automation has evolved far beyond basic triggers. In 2026, intelligent multi-agent AI ecosystems and advanced integration platforms like Make.com allow entire operational pipelines to run autonomously.\n\n1. Autonomous AI Agents: Unlike traditional bots that only follow rigid rules, modern AI agents analyze unstructured context, make operational decisions, and execute multi-step tasks across different software without human intervention.\n\n2. End-to-End Process Orchestration: Platforms combining LLMs with robust node-based workflows mean you can delegate entire project management sprints, lead qualification funnels, and customer support ticket resolutions.\n\n3. The Developer & Creator Edge: Mastering these tools shifts your value from performing manual execution to designing, monitoring, and scaling intelligent systems—making automation expertise one of the highest-paying skills today."
+            },
+            { 
+                id: 2, 
+                title: "How to Land Your First High-Paying Fiverr Gig", 
+                category: "Freelancing", 
+                date: "Sep 12, 2026", 
+                desc: "Step-by-step optimization strategy to rank your profile and attract direct clients.",
+                content: "Fiverr ya Upwork par pehla order lena thoda mushkil lagta hai, lekin agar aapki profile ka SEO aur gig title strong hai, toh clients khud approach karte hain. Apne gig ki thumbnail professional rakho aur description me clear mention karo ki aap client ki kya problem solve kar rahe ho."
+            },
+            { 
+                id: 3, 
+                title: "Smart Study Hacks for College Students", 
+                category: "Study Hacks", 
+                date: "Sep 10, 2026", 
+                desc: "Active recall and time-management techniques to study less and score more.",
+                content: "College me zyadatar students lambe ghante padhte hain fir bhi marks nahi aate. Iska reason hai galat tarika. Active recall, Pomodoro technique, aur khud ke handwritten notes banana sabse best tareeqe hain kam time me zyada yaad rakhne ke."
+            },
+            { 
+                id: 4, 
+                title: "Tanhai Ke Safar Mein: Jaun Elia Ki Shayari", 
+                category: "Poetry", 
+                date: "Sep 08, 2026", 
+                desc: "Zameen, aasman aur dil ke beech ki ek khubsurat aur dard bhari guftgu.",
+                content: "Ek shakhs ne pucha mujhse, \"Yeh dard kiska hai?\"\nMaine has kar kaha, \"Yeh yaar ka kissa hai.\"\n\nUsne kaha, \"Bhool ja uski yaadon ko abhi.\"\nMaine kaha, \"Kya karein, dil usi ki zid par adaa hai.\"\n\nUsne pucha, \"Aakhir kya milega is barish me rone se?\"\nMaine kaha, \"Bheegne se shayad purana zakhm hara hai.\""
+            }
+        ];
+
+        function renderBlogs(filter = 'all') {
+            const grid = document.getElementById('blog-grid');
+            grid.innerHTML = '';
+            const filtered = filter === 'all' ? blogs : blogs.filter(b => b.category === filter);
+            
+            filtered.forEach(blog => {
+                grid.innerHTML += `
+                    <div class="glass p-6 rounded-2xl flex flex-col justify-between hover:border-emerald-500/50 transition duration-300 relative group shadow-lg">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-bold px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">${blog.category}</span>
+                                <button onclick="deleteBlog(event, ${blog.id})" class="text-rose-400 hover:text-rose-300 text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 px-2.5 py-1 rounded-lg transition">Delete</button>
+                            </div>
+                            <h3 onclick="openModal(${blog.id})" class="text-lg font-bold mt-2 mb-2 cursor-pointer hover:text-emerald-400 transition">${blog.title}</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">${blog.desc}</p>
+                        </div>
+                        <div class="mt-6 flex justify-between items-center text-xs text-slate-400 font-medium pt-4 border-t border-white/5">
+                            <span>${blog.date}</span>
+                            <button onclick="openModal(${blog.id})" class="text-emerald-400 font-semibold hover:underline">Read Article →</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterBlogs(cat) {
+            renderBlogs(cat);
+        }
+
+        function toggleForm() {
+            const form = document.getElementById('blog-form-container');
+            form.classList.toggle('hidden');
+        }
+
+        function toggleProfileEdit() {
+            const form = document.getElementById('profile-form-container');
+            form.classList.toggle('hidden');
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            const name = document.getElementById('profile-name-input').value;
+            const bio = document.getElementById('profile-bio-input').value;
+            const fileInput = document.getElementById('profile-img-input');
+
+            document.getElementById('display-profile-name').innerText = name;
+            document.getElementById('display-profile-bio').innerText = bio;
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('display-profile-img').src = e.target.result;
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+
+            toggleProfileEdit();
+        }
+
+        function addNewBlog(event) {
+            event.preventDefault();
+            const newBlog = {
+                id: blogs.length > 0 ? blogs[0].id + 1 : 1,
+                title: document.getElementById('new-title').value,
+                category: document.getElementById('new-category').value,
+                date: document.getElementById('new-date').value,
+                desc: document.getElementById('new-desc').value,
+                content: document.getElementById('new-content').value
+            };
+            blogs.unshift(newBlog);
+            renderBlogs();
+            toggleForm();
+            document.getElementById('add-blog-form').reset();
+        }
+
+        function deleteBlog(event, id) {
+            event.stopPropagation();
+            blogs = blogs.filter(b => b.id !== id);
+            renderBlogs();
+        }
+
+        function openModal(id) {
+            const blog = blogs.find(b => b.id === id);
+            document.getElementById('modal-cat').innerText = blog.category;
+            document.getElementById('modal-title').innerText = blog.title;
+            document.getElementById('modal-date').innerText = blog.date;
+            document.getElementById('modal-content').innerText = blog.content;
+            document.getElementById('blog-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('blog-modal').classList.add('hidden');
+        }
+
+        renderBlogs();
+    </script>
+</body>
+</html>
